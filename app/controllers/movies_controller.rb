@@ -6,6 +6,17 @@ class MoviesController < ApplicationController
     # will render app/views/movies/show.<extension> by default
   end
 
+  def similar
+    @movie = Movie.find_by_id(params[:id])
+    director = @movie.director
+    if not director.nil?
+      @movies = Movie.similar_directors(director)
+    else
+      flash[:notice] = "'#{@movie.title}' has no director info"
+      redirect_to movies_path
+    end
+  end
+
   def index
     sort = params[:sort] || session[:sort]
     case sort
